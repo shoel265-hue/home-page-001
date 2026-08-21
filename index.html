@@ -81,7 +81,7 @@
         .top-btn.logout { background: #fee2e2; color: #dc2626; }
         .top-btn.logout:hover { background: #fecaca; }
 
-        .viewport { flex: 1; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .viewport { flex: 1; position: relative; overflow-y: auto; display: flex; justify-content: center; align-items: stretch; background-color: #f8fafc; }
         
         .home-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -127,7 +127,15 @@
         .btn-add:hover { background: #059669; }
 
         #content-iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; background: #fff; z-index: 5; display: none;
+            width: 100%; height: 100%; border: none; background: #fff; display: none;
+        }
+
+        /* 🖨️ 홈페이지 내부에서 열린 상태로 인쇄 시 다중 페이지 출력 및 포털 메뉴 숨김 처리 */
+        @media print {
+            body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
+            .sidebar, .top-navbar, #login-wrapper, #setting-panel, .home-bg { display: none !important; }
+            .content-area, .viewport { height: auto !important; overflow: visible !important; position: static !important; }
+            #content-iframe { display: block !important; width: 100% !important; height: auto !important; border: none !important; }
         }
     </style>
 </head>
@@ -185,17 +193,16 @@
                     <span class="arrow" id="arrow-worklog">▼</span>
                 </div>
                 <div class="sub-menu open" id="worklog-sub">
-                    <a class="sub-item" onclick="checkWorkLogAccess('geonchuk', 'https://geonchuk-work-log.netlify.app/', '건축 일일업무일지', this)">건축 일일업무일지[cite: 2]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('refrig', 'https://refrigeration-work-log.netlify.app/', '냉동 일일업무일지', this)">냉동 일일업무일지[cite: 3]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('mihwa', 'https://mihwa-work-log.netlify.app/', '미화 일일업무일지', this)">미화 일일업무일지[cite: 4]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('seolbi', 'https://seolbi-work-log.netlify.app/', '설비 일일업무일지', this)">설비 일일업무일지[cite: 5]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('sobang', 'https://sobang-work-log.netlify.app/', '소방 일일업무일지', this)">소방 일일업무일지</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('unsong', 'https://unsong-work-log.netlify.app/', '운송 일일업무일지', this)">운송 일일업무일지</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('report', 'https://daily-work-report1.netlify.app/', '일일 근무 보고서', this)">일일 근무 보고서</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('jeongi', 'https://jeongi-work-log.netlify.app/', '전기 일일업무일지', this)">전기 일일업무일지</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('jumgeom', 'https://jumgeom-work-log.netlify.app/', '점검 일일업무일지', this)">점검 일일업무일지</a>
-                    <!-- 🔑 행정 일일업무일지 실제 주소 적용 완료 -->
-                    <a class="sub-item" onclick="checkWorkLogAccess('haengjeong', 'https://shoel265-hue.github.io/haengjeong-work-log/', '행정 일일업무일지', this)">행정 일일업무일지[cite: 9]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('geonchuk', 'https://geonchuk-work-log.netlify.app/', '건축 일일업무일지', this)">건축 일일업무일지[cite: 8]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('refrig', 'https://refrigeration-work-log.netlify.app/', '냉동 일일업무일지', this)">냉동 일일업무일지[cite: 12]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('mihwa', 'https://mihwa-work-log.netlify.app/', '미화 일일업무일지', this)">미화 일일업무일지[cite: 11]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('seolbi', 'https://seolbi-work-log.netlify.app/', '설비 일일업무일지', this)">설비 일일업무일지[cite: 13]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('sobang', 'https://sobang-work-log.netlify.app/', '소방 일일업무일지', this)">소방 일일업무일지[cite: 14]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('unsong', 'https://unsong-work-log.netlify.app/', '운송 일일업무일지', this)">운송 일일업무일지[cite: 15]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('report', 'https://daily-work-report1.netlify.app/', '일일 근무 보고서', this)">일일 근무 보고서[cite: 7]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('jeongi', 'https://jeongi-work-log.netlify.app/', '전기 일일업무일지', this)">전기 일일업무일지[cite: 9]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('jumgeom', 'https://jumgeom-work-log.netlify.app/', '점검 일일업무일지', this)">점검 일일업무일지[cite: 10]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('haengjeong', 'https://shoel265-hue.github.io/haengjeong-work-log/', '행정 일일업무일지', this)">행정 일일업무일지</a>
                 </div>
 
                 <!-- 🔑 자재관리대장 -->
