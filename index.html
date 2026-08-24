@@ -380,31 +380,20 @@
             }
         }
 
+        // 💡 소방팀 전용 권한 제한 설정 (소방팀 계정은 '소방 일일업무일지'와 '일일 근무 보고서'만 허용)
         function checkWorkLogAccess(targetKey, url, titleText, element) {
-            if (currentLoginUser.type === "admin") {
-                loadContent(url, titleText, element);
-                return;
+            if (currentLoginUser && currentLoginUser.type === "team" && currentLoginUser.id === "sobang") {
+                if (targetKey !== 'sobang' && targetKey !== 'report') {
+                    alert("⚠️ 소방팀 계정으로는 [소방 일일업무일지]와 [일일 근무 보고서]만 열람/작성하실 수 있습니다.");
+                    return;
+                }
             }
 
-            const myId = currentLoginUser.id.toLowerCase();
-            let isAllowed = false;
-
-            if (targetKey === 'geonchuk' && myId.includes('geonchuk')) isAllowed = true;
-            else if (targetKey === 'refrig' && (myId.includes('refrig') || myId.includes('냉동'))) isAllowed = true;
-            else if (targetKey === 'mihwa' && (myId.includes('mihwa') || myId.includes('미화'))) isAllowed = true;
-            else if (targetKey === 'seolbi' && (myId.includes('seolbi') || myId.includes('설비'))) isAllowed = true;
-            else if (targetKey === 'sobang' && (myId.includes('sobang') || myId.includes('소방'))) isAllowed = true;
-            else if (targetKey === 'unsong' && (myId.includes('unsong') || myId.includes('운송'))) isAllowed = true;
-            else if (targetKey === 'report' && (myId.includes('report') || myId.includes('보고서'))) isAllowed = true;
-            else if (targetKey === 'jeongi' && (myId.includes('jeongi') || myId.includes('전기'))) isAllowed = true;
-            else if (targetKey === 'jumgeom' && (myId.includes('jumgeom') || myId.includes('점검'))) isAllowed = true;
-            else if (targetKey === 'haengjeong' && (myId.includes('haengjeong') || myId.includes('행정'))) isAllowed = true;
-
-            if (isAllowed) {
-                loadContent(url, titleText, element);
-            } else {
-                alert(`⚠️ 해당 일지는 [${titleText}] 담당 팀 전용입니다.\n해당 팀 계정으로 로그인해 주세요.`);
+            let finalUrl = url;
+            if (currentLoginUser && currentLoginUser.type === "team") {
+                finalUrl += (url.includes('?') ? '&' : '?') + 'team=' + encodeURIComponent(currentLoginUser.teamName);
             }
+            loadContent(finalUrl, titleText, element);
         }
 
         function loadSharedContent(baseUrl, titleText, element) {
