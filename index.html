@@ -193,36 +193,36 @@
                     <span class="arrow" id="arrow-worklog">▼</span>
                 </div>
                 <div class="sub-menu open" id="worklog-sub">
-                    <a class="sub-item" onclick="checkWorkLogAccess('geonchuk', 'https://shoel265-hue.github.io/g-work-log/', '건축 일일업무일지', this)">건축 일일업무일지[cite: 25]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('refrig', 'https://shoel265-hue.github.io/n-work-log/', '냉동 일일업무일지', this)">냉동 일일업무일지[cite: 26]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('mihwa', 'https://shoel265-hue.github.io/m-work-log/', '미화 일일업무일지', this)">미화 일일업무일지[cite: 27]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('seolbi', 'https://shoel265-hue.github.io/s-work-log/', '설비 일일업무일지', this)">설비 일일업무일지[cite: 28]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('sobang', 'https://shoel265-hue.github.io/sb-work-log/', '소방 일일업무일지', this)">소방 일일업무일지[cite: 29]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('unsong', 'https://shoel265-hue.github.io/u-work-log/', '운송 일일업무일지', this)">운송 일일업무일지[cite: 30]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('report', 'https://shoel265-hue.github.io/day-work-log/', '일일 근무 보고서', this)">일일 근무 보고서[cite: 31]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('jeongi', 'https://shoel265-hue.github.io/e-work-log/', '전기 일일업무일지', this)">전기 일일업무일지[cite: 32]</a>
-                    <a class="sub-item" onclick="checkWorkLogAccess('jumgeom', 'https://shoel265-hue.github.io/gg-work-log/', '점검 일일업무일지', this)">점검 일일업무일지[cite: 33]</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('geonchuk', 'https://shoel265-hue.github.io/g-work-log/', '건축 일일업무일지', this)">건축 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('refrig', 'https://shoel265-hue.github.io/n-work-log/', '냉동 일일업무일지', this)">냉동 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('mihwa', 'https://shoel265-hue.github.io/m-work-log/', '미화 일일업무일지', this)">미화 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('seolbi', 'https://shoel265-hue.github.io/s-work-log/', '설비 일일업무일지', this)">설비 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('sobang', 'https://shoel265-hue.github.io/sb-work-log/', '소방 일일업무일지', this)">소방 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('unsong', 'https://shoel265-hue.github.io/u-work-log/', '운송 일일업무일지', this)">운송 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('report', 'https://shoel265-hue.github.io/day-work-log/', '일일 근무 보고서', this)">일일 근무 보고서</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('jeongi', 'https://shoel265-hue.github.io/e-work-log/', '전기 일일업무일지', this)">전기 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('jumgeom', 'https://shoel265-hue.github.io/gg-work-log/', '점검 일일업무일지', this)">점검 일일업무일지</a>
                     <a class="sub-item" onclick="checkWorkLogAccess('haengjeong', 'https://shoel265-hue.github.io/haengjeong-work-log/', '행정 일일업무일지', this)">행정 일일업무일지</a>
                 </div>
 
                 <!-- 🔑 자재관리대장 -->
                 <a class="menu-item" onclick="loadSharedContent('https://shoel265-hue.github.io/material-management-syste/', '2. 자재관리대장', this)">
                     <div class="menu-item-left">
-                        <span class="icon">📦</span> <span>2. 자재관리대장</span>[cite: 23]
+                        <span class="icon">📦</span> <span>2. 자재관리대장</span>
                     </div>
                 </a>
 
                 <!-- 🔑 공기구관리대장 -->
                 <a class="menu-item" onclick="loadSharedContent('https://shoel265-hue.github.io/tool-management-system/', '3. 공기구관리대장', this)">
                     <div class="menu-item-left">
-                        <span class="icon">🔧</span> <span>3. 공기구관리대장</span>[cite: 24]
+                        <span class="icon">🔧</span> <span>3. 공기구관리대장</span>
                     </div>
                 </a>
 
                 <!-- 🔑 위험성평가 -->
-                <a class="menu-item" onclick="loadSharedContent('https://shoel265-hue.github.io/team-risk-assessment/', '4. 위험성평가', this)">
+                <a class="menu-item" onclick="checkRiskAccess('https://shoel265-hue.github.io/team-risk-assessment/', '4. 위험성평가', this)">
                     <div class="menu-item-left">
-                        <span class="icon">⚠️</span> <span>4. 위험성평가</span>[cite: 22]
+                        <span class="icon">⚠️</span> <span>4. 위험성평가</span>
                     </div>
                 </a>
 
@@ -380,12 +380,19 @@
             }
         }
 
-        // 💡 소방팀 전용 권한 제한 설정 (소방팀 계정은 '소방 일일업무일지'와 '일일 근무 보고서'만 허용)
+        // 💡 모든 팀 계정이 본인 팀 일지와 소방팀만 예외적으로 소방+보고서 접근이 가능하도록 철저히 제한하는 보안 함수
         function checkWorkLogAccess(targetKey, url, titleText, element) {
-            if (currentLoginUser && currentLoginUser.type === "team" && currentLoginUser.id === "sobang") {
-                if (targetKey !== 'sobang' && targetKey !== 'report') {
-                    alert("⚠️ 소방팀 계정으로는 [소방 일일업무일지]와 [일일 근무 보고서]만 열람/작성하실 수 있습니다.");
-                    return;
+            if (currentLoginUser && currentLoginUser.type === "team") {
+                if (currentLoginUser.id === "sobang") {
+                    if (targetKey !== 'sobang' && targetKey !== 'report') {
+                        alert("⚠️ 소방팀 계정으로는 [소방 일일업무일지]와 [일일 근무 보고서]만 열람/작성하실 수 있습니다.");
+                        return;
+                    }
+                } else {
+                    if (targetKey !== currentLoginUser.id) {
+                        alert(`⚠️ ${currentLoginUser.teamName} 계정으로는 [${titleText}]에 접근하실 수 없습니다.`);
+                        return;
+                    }
                 }
             }
 
@@ -396,10 +403,21 @@
             loadContent(finalUrl, titleText, element);
         }
 
+        // 💡 위험성평가 접근 시 최고관리자(admin)는 전체 선택 가능, 팀 계정은 본인 팀으로 고정(`forceTeam`)되도록 파라미터 보완
+        function checkRiskAccess(baseUrl, titleText, element) {
+            let finalUrl = baseUrl;
+            if (currentLoginUser && currentLoginUser.type === "team") {
+                let separator = baseUrl.includes('?') ? '&' : '?';
+                finalUrl += separator + 'team=' + encodeURIComponent(currentLoginUser.teamName) + '&dept=' + encodeURIComponent(currentLoginUser.teamName) + '&forceTeam=' + encodeURIComponent(currentLoginUser.teamName);
+            }
+            loadContent(finalUrl, titleText, element);
+        }
+
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
-                finalUrl += (baseUrl.includes('?') ? '&' : '?') + 'team=' + encodeURIComponent(currentLoginUser.teamName);
+                let separator = baseUrl.includes('?') ? '&' : '?';
+                finalUrl += separator + 'team=' + encodeURIComponent(currentLoginUser.teamName) + '&dept=' + encodeURIComponent(currentLoginUser.teamName);
             }
             loadContent(finalUrl, titleText, element);
         }
