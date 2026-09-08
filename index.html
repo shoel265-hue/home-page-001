@@ -132,10 +132,32 @@
 
         /* 🖨️ 홈페이지 내부에서 열린 상태로 인쇄 시 다중 페이지 출력 및 포털 메뉴 숨김 처리 */
         @media print {
-            body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
-            .sidebar, .top-navbar, #login-wrapper, #setting-panel, .home-bg { display: none !important; }
-            .content-area, .viewport { height: auto !important; overflow: visible !important; position: static !important; }
-            #content-iframe { display: block !important; width: 100% !important; height: auto !important; border: none !important; }
+            @page {
+                size: A4;       /* 인쇄 용지 규격을 A4로 고정 */
+                margin: 10mm;   /* 인쇄 용지 사방 여백을 10mm로 통일 */
+            }
+            body, html { 
+                overflow: visible !important; 
+                height: auto !important; 
+                background: #fff !important; 
+                -webkit-print-color-adjust: exact; /* 배경색이나 표 테두리 색상이 PC마다 다르게 나오는 것 방지 */
+            }
+            .sidebar, .top-navbar, #login-wrapper, #setting-panel, .home-bg { 
+                display: none !important; 
+            }
+            .content-area, .viewport { 
+                height: auto !important; 
+                overflow: visible !important; 
+                position: static !important; 
+                display: block !important;
+            }
+            #content-iframe { 
+                display: block !important; 
+                width: 100% !important; 
+                height: auto !important; 
+                border: none !important; 
+                position: static !important;
+            }
         }
     </style>
 </head>
