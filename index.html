@@ -130,34 +130,12 @@
             width: 100%; height: 100%; border: none; background: #fff; display: none;
         }
 
-        /* 🖨️ 홈페이지 내부에서 열린 상태로 인쇄 시 다중 페이지 출력 및 포털 메뉴 숨김 처리 */
         @media print {
-            @page {
-                size: A4;       /* 인쇄 용지 규격을 A4로 고정 */
-                margin: 10mm;   /* 인쇄 용지 사방 여백을 10mm로 통일 */
-            }
-            body, html { 
-                overflow: visible !important; 
-                height: auto !important; 
-                background: #fff !important; 
-                -webkit-print-color-adjust: exact; /* 배경색이나 표 테두리 색상이 PC마다 다르게 나오는 것 방지 */
-            }
-            .sidebar, .top-navbar, #login-wrapper, #setting-panel, .home-bg { 
-                display: none !important; 
-            }
-            .content-area, .viewport { 
-                height: auto !important; 
-                overflow: visible !important; 
-                position: static !important; 
-                display: block !important;
-            }
-            #content-iframe { 
-                display: block !important; 
-                width: 100% !important; 
-                height: auto !important; 
-                border: none !important; 
-                position: static !important;
-            }
+            @page { size: A4; margin: 10mm; }
+            body, html { overflow: visible !important; height: auto !important; background: #fff !important; -webkit-print-color-adjust: exact; }
+            .sidebar, .top-navbar, #login-wrapper, #setting-panel, .home-bg { display: none !important; }
+            .content-area, .viewport { height: auto !important; overflow: visible !important; position: static !important; display: block !important; }
+            #content-iframe { display: block !important; width: 100% !important; height: auto !important; border: none !important; position: static !important; }
         }
     </style>
 </head>
@@ -176,9 +154,7 @@
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
                         <div class="input-row">
                             <label>USER ID</label>
-                            <select id="login-id-select">
-                                <!-- 동적 로드 -->
-                            </select>
+                            <select id="login-id-select"><!-- 동적 로드 --></select>
                         </div>
                         <div class="input-row">
                             <label>PASSWORD</label>
@@ -188,9 +164,7 @@
                     <button class="btn-login" onclick="processLogin()">LOG IN</button>
                 </div>
             </div>
-            <div class="login-footer">
-                COPYRIGHT &copy; FACILITY MANAGEMENT. ALL RIGHTS RESERVED.
-            </div>
+            <div class="login-footer">COPYRIGHT &copy; FACILITY MANAGEMENT. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
@@ -225,34 +199,27 @@
                     <a class="sub-item" onclick="checkWorkLogAccess('jeongi', 'https://shoel265-hue.github.io/e-work-log/', '전기 일일업무일지', this)">전기 일일업무일지</a>
                     <a class="sub-item" onclick="checkWorkLogAccess('jumgeom', 'https://shoel265-hue.github.io/gg-work-log/', '점검 일일업무일지', this)">점검 일일업무일지</a>
                     <a class="sub-item" onclick="checkWorkLogAccess('haengjeong', 'https://shoel265-hue.github.io/haengjeong-work-log/', '행정 일일업무일지', this)">행정 일일업무일지</a>
+                    <a class="sub-item" onclick="checkWorkLogAccess('ipjusa_mihwa', 'https://shoel265-hue.github.io/ipjusa-mihwa-work-log/', '입주사미화 일일업무일지', this)">입주사미화 일일업무일지</a>
                 </div>
 
                 <!-- 🔑 자재관리대장 -->
                 <a class="menu-item" onclick="loadSharedContent('https://shoel265-hue.github.io/material-management-syste/', '2. 자재관리대장', this)">
-                    <div class="menu-item-left">
-                        <span class="icon">📦</span> <span>2. 자재관리대장</span>
-                    </div>
+                    <div class="menu-item-left"><span class="icon">📦</span> <span>2. 자재관리대장</span></div>
                 </a>
 
                 <!-- 🔑 공기구관리대장 -->
                 <a class="menu-item" onclick="loadSharedContent('https://shoel265-hue.github.io/tool-management-system/', '3. 공기구관리대장', this)">
-                    <div class="menu-item-left">
-                        <span class="icon">🔧</span> <span>3. 공기구관리대장</span>
-                    </div>
+                    <div class="menu-item-left"><span class="icon">🔧</span> <span>3. 공기구관리대장</span></div>
                 </a>
 
                 <!-- 🔑 위험성평가 -->
                 <a class="menu-item" onclick="checkRiskAccess('https://shoel265-hue.github.io/team-risk-assessment/', '4. 위험성평가', this)">
-                    <div class="menu-item-left">
-                        <span class="icon">⚠️</span> <span>4. 위험성평가</span>
-                    </div>
+                    <div class="menu-item-left"><span class="icon">⚠️</span> <span>4. 위험성평가</span></div>
                 </a>
 
                 <div class="menu-category" style="margin-top: 15px;">시스템 설정</div>
                 <a class="menu-item" id="setting-menu-btn" onclick="openSystemSettings(this)">
-                    <div class="menu-item-left">
-                        <span class="icon">⚙️</span> <span>시스템 환경설정</span>
-                    </div>
+                    <div class="menu-item-left"><span class="icon">⚙️</span> <span>시스템 환경설정</span></div>
                 </a>
             </div>
         </div>
@@ -299,9 +266,7 @@
                                     <th style="width: 20%;">관리</th>
                                 </tr>
                             </thead>
-                            <tbody id="team-accounts-tbody">
-                                <!-- 동적 생성 -->
-                            </tbody>
+                            <tbody id="team-accounts-tbody"><!-- 동적 생성 --></tbody>
                         </table>
                         <button class="setting-btn" onclick="saveTeamAccounts()" style="background-color: #10b981;">팀 계정 변경사항 저장</button>
                     </div>
@@ -318,10 +283,11 @@
         let adminId = localStorage.getItem('portal_admin_id') || "admin";
         let adminPw = localStorage.getItem('portal_admin_pw') || "8888";
 
-        let teamAccounts = JSON.parse(localStorage.getItem('portal_team_accounts')) || [
+        let defaultTeamAccounts = [
             { team: "건축팀", id: "geonchuk", pw: "1111" },
             { team: "냉동팀", id: "refrig", pw: "1111" },
             { team: "미화팀", id: "mihwa", pw: "1111" },
+            { team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" },
             { team: "설비팀", id: "seolbi", pw: "1111" },
             { team: "소방팀", id: "sobang", pw: "1111" },
             { team: "운송팀", id: "unsong", pw: "1111" },
@@ -329,6 +295,16 @@
             { team: "점검팀", id: "jumgeom", pw: "1111" },
             { team: "행정팀", id: "haengjeong", pw: "1111" }
         ];
+
+        let storedAccounts = JSON.parse(localStorage.getItem('portal_team_accounts'));
+        let teamAccounts = storedAccounts ? storedAccounts : defaultTeamAccounts;
+
+        if (!teamAccounts.some(acc => acc.id === 'ipjusa_mihwa')) {
+            teamAccounts.push({ team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" });
+        }
+        if (!teamAccounts.some(acc => acc.id === 'haengjeong')) {
+            teamAccounts.push({ team: "행정팀", id: "haengjeong", pw: "1111" });
+        }
 
         let currentLoginUser = null;
 
@@ -339,11 +315,12 @@
 
         function refreshLoginSelectBox() {
             const selectBox = document.getElementById('login-id-select');
-            selectBox.innerHTML = `<option value="${adminId}">최고관리자 (${adminId})</option>`;
+            let optionsHtml = `<option value="${adminId}">최고관리자 (${adminId})</option>`;
             
             teamAccounts.forEach(acc => {
-                selectBox.innerHTML += `<option value="${acc.id}">${acc.team} (${acc.id})</option>`;
+                optionsHtml += `<option value="${acc.id}">${acc.team} (${acc.id})</option>`;
             });
+            selectBox.innerHTML = optionsHtml;
         }
 
         function processLogin() {
@@ -402,7 +379,6 @@
             }
         }
 
-        // 💡 모든 팀 계정이 본인 팀 일지와 소방팀만 예외적으로 소방+보고서 접근이 가능하도록 철저히 제한하는 보안 함수
         function checkWorkLogAccess(targetKey, url, titleText, element) {
             if (currentLoginUser && currentLoginUser.type === "team") {
                 if (currentLoginUser.id === "sobang") {
@@ -425,12 +401,14 @@
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 위험성평가 접근 시 최고관리자(admin)는 전체 선택 가능, 팀 계정은 본인 팀으로 고정(`forceTeam`)되도록 파라미터 보완
+        // 💡 [방법 2 적용] '입주사미화팀'으로 로그인 시 위험성평가 파일의 옵션명인 '입주사미화'로 자동 변환하여 연동
         function checkRiskAccess(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                finalUrl += separator + 'team=' + encodeURIComponent(currentLoginUser.teamName) + '&dept=' + encodeURIComponent(currentLoginUser.teamName) + '&forceTeam=' + encodeURIComponent(currentLoginUser.teamName);
+                let mappedTeamName = currentLoginUser.teamName === "입주사미화팀" ? "입주사미화" : currentLoginUser.teamName;
+                let teamParam = encodeURIComponent(mappedTeamName);
+                finalUrl += separator + 'team=' + teamParam + '&dept=' + teamParam + '&forceTeam=' + teamParam;
             }
             loadContent(finalUrl, titleText, element);
         }
@@ -439,7 +417,8 @@
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                finalUrl += separator + 'team=' + encodeURIComponent(currentLoginUser.teamName) + '&dept=' + encodeURIComponent(currentLoginUser.teamName);
+                let mappedTeamName = currentLoginUser.teamName === "입주사미화팀" ? "입주사미화" : currentLoginUser.teamName;
+                finalUrl += separator + 'team=' + encodeURIComponent(mappedTeamName) + '&dept=' + encodeURIComponent(mappedTeamName);
             }
             loadContent(finalUrl, titleText, element);
         }
