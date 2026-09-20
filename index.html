@@ -401,23 +401,24 @@
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 [방법 2 적용] '입주사미화팀'으로 로그인 시 위험성평가 파일의 옵션명인 '입주사미화'로 자동 변환하여 연동
+        // 💡 모든 팀 명칭 뒤의 '팀' 글자를 자동 제거하여 외부 시스템(위험성평가 등)과 올바르게 연동
         function checkRiskAccess(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let mappedTeamName = currentLoginUser.teamName === "입주사미화팀" ? "입주사미화" : currentLoginUser.teamName;
+                let mappedTeamName = currentLoginUser.teamName.replace(/팀$/, '');
                 let teamParam = encodeURIComponent(mappedTeamName);
                 finalUrl += separator + 'team=' + teamParam + '&dept=' + teamParam + '&forceTeam=' + teamParam;
             }
             loadContent(finalUrl, titleText, element);
         }
 
+        // 💡 모든 팀 명칭 뒤의 '팀' 글자를 자동 제거하여 외부 시스템(자재/공기구 관리대장 등)과 올바르게 연동
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let mappedTeamName = currentLoginUser.teamName === "입주사미화팀" ? "입주사미화" : currentLoginUser.teamName;
+                let mappedTeamName = currentLoginUser.teamName.replace(/팀$/, '');
                 finalUrl += separator + 'team=' + encodeURIComponent(mappedTeamName) + '&dept=' + encodeURIComponent(mappedTeamName);
             }
             loadContent(finalUrl, titleText, element);
