@@ -285,15 +285,15 @@
 
         let defaultTeamAccounts = [
             { team: "건축팀", id: "geonchuk", pw: "1111" },
-            { team: "냉동팀", id: "refrig", pw: "1111" },
-            { team: "미화팀", id: "mihwa", pw: "1111" },
-            { team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" },
             { team: "설비팀", id: "seolbi", pw: "1111" },
+            { team: "냉동", id: "refrig", pw: "1111" },
             { team: "소방팀", id: "sobang", pw: "1111" },
-            { team: "운송팀", id: "unsong", pw: "1111" },
+            { team: "운송", id: "unsong", pw: "1111" },
             { team: "전기팀", id: "jeongi", pw: "1111" },
             { team: "점검팀", id: "jumgeom", pw: "1111" },
-            { team: "행정팀", id: "haengjeong", pw: "1111" }
+            { team: "미화팀", id: "mihwa", pw: "1111" },
+            { team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" },
+            { team: "행정", id: "haengjeong", pw: "1111" }
         ];
 
         let storedAccounts = JSON.parse(localStorage.getItem('portal_team_accounts'));
@@ -401,25 +401,32 @@
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 모든 팀 명칭 뒤의 '팀' 글자를 자동 제거하여 외부 시스템(위험성평가 등)과 올바르게 연동
+        // 💡 위험성평가 연동: 어떤 형식의 팀 이름이든 하위 시스템에 맞게 매칭되도록 파라미터 다중 제공
         function checkRiskAccess(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let mappedTeamName = currentLoginUser.teamName.replace(/팀$/, '');
-                let teamParam = encodeURIComponent(mappedTeamName);
-                finalUrl += separator + 'team=' + teamParam + '&dept=' + teamParam + '&forceTeam=' + teamParam;
+                let rawTeam = currentLoginUser.teamName;
+                let cleanTeam = rawTeam.replace(/팀$/, '');
+                let teamParam = encodeURIComponent(cleanTeam);
+                let fullTeamParam = encodeURIComponent(rawTeam);
+                finalUrl += separator + 'team=' + teamParam + '&dept=' + teamParam + '&forceTeam=' + teamParam + '&loginTeam=' + fullTeamParam;
             }
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 모든 팀 명칭 뒤의 '팀' 글자를 자동 제거하여 외부 시스템(자재/공기구 관리대장 등)과 올바르게 연동
+        // 💡 자재 및 공기구관리대장 연동: 점검팀, 냉동팀 등 어떤 이름이든 호환되도록 파라미터 다중 전달
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let mappedTeamName = currentLoginUser.teamName.replace(/팀$/, '');
-                finalUrl += separator + 'team=' + encodeURIComponent(mappedTeamName) + '&dept=' + encodeURIComponent(mappedTeamName);
+                let rawTeam = currentLoginUser.teamName;                     // 예: "점검팀" 또는 "점검"
+                let cleanTeam = rawTeam.replace(/팀$/, '');                    // 예: "점검"
+                
+                finalUrl += separator + 'team=' + encodeURIComponent(cleanTeam) 
+                         + '&dept=' + encodeURIComponent(cleanTeam) 
+                         + '&loginTeam=' + encodeURIComponent(rawTeam)
+                         + '&userTeam=' + encodeURIComponent(rawTeam);
             }
             loadContent(finalUrl, titleText, element);
         }
