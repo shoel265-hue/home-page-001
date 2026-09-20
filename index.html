@@ -260,7 +260,7 @@
                         <table class="team-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 25%;">팀 명칭 (예: 행정팀)</th>
+                                    <th style="width: 25%;">팀 명칭</th>
                                     <th style="width: 25%;">아이디</th>
                                     <th style="width: 30%;">비밀번호</th>
                                     <th style="width: 20%;">관리</th>
@@ -285,26 +285,19 @@
 
         let defaultTeamAccounts = [
             { team: "건축팀", id: "geonchuk", pw: "1111" },
-            { team: "설비팀", id: "seolbi", pw: "1111" },
             { team: "냉동", id: "refrig", pw: "1111" },
+            { team: "미화팀", id: "mihwa", pw: "1111" },
+            { team: "입주사미화", id: "ipjusa_mihwa", pw: "1111" },
+            { team: "설비팀", id: "seolbi", pw: "1111" },
             { team: "소방팀", id: "sobang", pw: "1111" },
             { team: "운송", id: "unsong", pw: "1111" },
             { team: "전기팀", id: "jeongi", pw: "1111" },
             { team: "점검팀", id: "jumgeom", pw: "1111" },
-            { team: "미화팀", id: "mihwa", pw: "1111" },
-            { team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" },
             { team: "행정", id: "haengjeong", pw: "1111" }
         ];
 
-        let storedAccounts = JSON.parse(localStorage.getItem('portal_team_accounts'));
+        let storedAccounts = JSON.parse(localStorage.getItem('portal_team_accounts_v4'));
         let teamAccounts = storedAccounts ? storedAccounts : defaultTeamAccounts;
-
-        if (!teamAccounts.some(acc => acc.id === 'ipjusa_mihwa')) {
-            teamAccounts.push({ team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" });
-        }
-        if (!teamAccounts.some(acc => acc.id === 'haengjeong')) {
-            teamAccounts.push({ team: "행정팀", id: "haengjeong", pw: "1111" });
-        }
 
         let currentLoginUser = null;
 
@@ -401,32 +394,24 @@
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 위험성평가 연동: 어떤 형식의 팀 이름이든 하위 시스템에 맞게 매칭되도록 파라미터 다중 제공
+        // 💡 위험성평가 연동: 설정된 팀 명칭 그대로 전달 (건축팀, 냉동 등 각 하위 시스템 셀렉트박스 명칭과 1:1 완벽 대응)
         function checkRiskAccess(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let rawTeam = currentLoginUser.teamName;
-                let cleanTeam = rawTeam.replace(/팀$/, '');
-                let teamParam = encodeURIComponent(cleanTeam);
-                let fullTeamParam = encodeURIComponent(rawTeam);
-                finalUrl += separator + 'team=' + teamParam + '&dept=' + teamParam + '&forceTeam=' + teamParam + '&loginTeam=' + fullTeamParam;
+                let teamName = currentLoginUser.teamName;
+                finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName) + '&forceTeam=' + encodeURIComponent(teamName);
             }
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 자재 및 공기구관리대장 연동: 점검팀, 냉동팀 등 어떤 이름이든 호환되도록 파라미터 다중 전달
+        // 💡 자재 및 공기구관리대장 연동: 설정된 팀 명칭 그대로 전달 (건축팀, 냉동 등 각 하위 시스템 셀렉트박스 명칭과 1:1 완벽 대응)
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let rawTeam = currentLoginUser.teamName;                     // 예: "점검팀" 또는 "점검"
-                let cleanTeam = rawTeam.replace(/팀$/, '');                    // 예: "점검"
-                
-                finalUrl += separator + 'team=' + encodeURIComponent(cleanTeam) 
-                         + '&dept=' + encodeURIComponent(cleanTeam) 
-                         + '&loginTeam=' + encodeURIComponent(rawTeam)
-                         + '&userTeam=' + encodeURIComponent(rawTeam);
+                let teamName = currentLoginUser.teamName;
+                finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
             }
             loadContent(finalUrl, titleText, element);
         }
@@ -480,7 +465,7 @@
             teamAccounts.forEach((acc, index) => {
                 tbody.innerHTML += `
                     <tr>
-                        <td><input type="text" class="t-name" value="${acc.team}" placeholder="예: 행정팀"></td>
+                        <td><input type="text" class="t-name" value="${acc.team}" placeholder="예: 건축팀 또는 냉동"></td>
                         <td><input type="text" class="t-id" value="${acc.id}" placeholder="아이디"></td>
                         <td><input type="text" class="t-pw" value="${acc.pw}" placeholder="비밀번호"></td>
                         <td><button class="btn-del" onclick="deleteTeamAccountRow(${index})">삭제</button></td>
@@ -514,7 +499,7 @@
             });
 
             teamAccounts = updatedAccounts;
-            localStorage.setItem('portal_team_accounts', JSON.stringify(teamAccounts));
+            localStorage.setItem('portal_team_accounts_v4', JSON.stringify(teamAccounts));
             refreshLoginSelectBox();
             alert("✅ 팀별 로그인 계정 정보가 성공적으로 저장되었습니다!");
         }
