@@ -260,7 +260,7 @@
                         <table class="team-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 25%;">팀 명칭</th>
+                                    <th style="width: 25%;">팀 명칭 (예: 행정팀)</th>
                                     <th style="width: 25%;">아이디</th>
                                     <th style="width: 30%;">비밀번호</th>
                                     <th style="width: 20%;">관리</th>
@@ -285,19 +285,26 @@
 
         let defaultTeamAccounts = [
             { team: "건축팀", id: "geonchuk", pw: "1111" },
-            { team: "냉동", id: "refrig", pw: "1111" },
+            { team: "냉동팀", id: "refrig", pw: "1111" },
             { team: "미화팀", id: "mihwa", pw: "1111" },
-            { team: "입주사미화", id: "ipjusa_mihwa", pw: "1111" },
+            { team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" },
             { team: "설비팀", id: "seolbi", pw: "1111" },
             { team: "소방팀", id: "sobang", pw: "1111" },
-            { team: "운송", id: "unsong", pw: "1111" },
+            { team: "운송팀", id: "unsong", pw: "1111" },
             { team: "전기팀", id: "jeongi", pw: "1111" },
             { team: "점검팀", id: "jumgeom", pw: "1111" },
-            { team: "행정", id: "haengjeong", pw: "1111" }
+            { team: "행정팀", id: "haengjeong", pw: "1111" }
         ];
 
-        let storedAccounts = JSON.parse(localStorage.getItem('portal_team_accounts_v4'));
+        let storedAccounts = JSON.parse(localStorage.getItem('portal_team_accounts'));
         let teamAccounts = storedAccounts ? storedAccounts : defaultTeamAccounts;
+
+        if (!teamAccounts.some(acc => acc.id === 'ipjusa_mihwa')) {
+            teamAccounts.push({ team: "입주사미화팀", id: "ipjusa_mihwa", pw: "1111" });
+        }
+        if (!teamAccounts.some(acc => acc.id === 'haengjeong')) {
+            teamAccounts.push({ team: "행정팀", id: "haengjeong", pw: "1111" });
+        }
 
         let currentLoginUser = null;
 
@@ -394,24 +401,24 @@
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 위험성평가 연동: 설정된 팀 명칭 그대로 전달 (건축팀, 냉동 등 각 하위 시스템 셀렉트박스 명칭과 1:1 완벽 대응)
+        // 💡 [방법 2 적용] '입주사미화팀'으로 로그인 시 위험성평가 파일의 옵션명인 '입주사미화'로 자동 변환하여 연동
         function checkRiskAccess(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let teamName = currentLoginUser.teamName;
-                finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName) + '&forceTeam=' + encodeURIComponent(teamName);
+                let mappedTeamName = currentLoginUser.teamName === "입주사미화팀" ? "입주사미화" : currentLoginUser.teamName;
+                let teamParam = encodeURIComponent(mappedTeamName);
+                finalUrl += separator + 'team=' + teamParam + '&dept=' + teamParam + '&forceTeam=' + teamParam;
             }
             loadContent(finalUrl, titleText, element);
         }
 
-        // 💡 자재 및 공기구관리대장 연동: 설정된 팀 명칭 그대로 전달 (건축팀, 냉동 등 각 하위 시스템 셀렉트박스 명칭과 1:1 완벽 대응)
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
             if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let teamName = currentLoginUser.teamName;
-                finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
+                let mappedTeamName = currentLoginUser.teamName === "입주사미화팀" ? "입주사미화" : currentLoginUser.teamName;
+                finalUrl += separator + 'team=' + encodeURIComponent(mappedTeamName) + '&dept=' + encodeURIComponent(mappedTeamName);
             }
             loadContent(finalUrl, titleText, element);
         }
@@ -465,7 +472,7 @@
             teamAccounts.forEach((acc, index) => {
                 tbody.innerHTML += `
                     <tr>
-                        <td><input type="text" class="t-name" value="${acc.team}" placeholder="예: 건축팀 또는 냉동"></td>
+                        <td><input type="text" class="t-name" value="${acc.team}" placeholder="예: 행정팀"></td>
                         <td><input type="text" class="t-id" value="${acc.id}" placeholder="아이디"></td>
                         <td><input type="text" class="t-pw" value="${acc.pw}" placeholder="비밀번호"></td>
                         <td><button class="btn-del" onclick="deleteTeamAccountRow(${index})">삭제</button></td>
@@ -499,7 +506,7 @@
             });
 
             teamAccounts = updatedAccounts;
-            localStorage.setItem('portal_team_accounts_v4', JSON.stringify(teamAccounts));
+            localStorage.setItem('portal_team_accounts', JSON.stringify(teamAccounts));
             refreshLoginSelectBox();
             alert("✅ 팀별 로그인 계정 정보가 성공적으로 저장되었습니다!");
         }
@@ -547,6 +554,41 @@
             settingPanel.style.display = 'none';
             bg.style.display = 'flex';
         }
+
+        // ===== 자재관리 PDF 저장: 자재관리 페이지가 보낸 제목을 그대로 파일명으로 사용 =====
+        const pendingPdfPrints = new Map();
+        window.addEventListener('message', event => {
+            const contentFrame = document.getElementById('content-iframe');
+            const message = event.data;
+            if (!contentFrame || event.source !== contentFrame.contentWindow || message?.type !== 'material-pdf-print' || !message.requestId) return;
+
+            console.log('[포털] PDF 제목 수신:', message.title);
+            const previousTitle = document.title;
+            document.title = String(message.title || previousTitle).slice(0, 180);
+            pendingPdfPrints.set(message.requestId, { previousTitle, source: event.source, origin: event.origin });
+
+            const restorePortalTitle = () => {
+                const pending = pendingPdfPrints.get(message.requestId);
+                if (!pending) return;
+                document.title = pending.previousTitle;
+                pending.source.postMessage(
+                    { type: 'material-pdf-print-finished', requestId: message.requestId },
+                    pending.origin && pending.origin !== 'null' ? pending.origin : '*'
+                );
+                pendingPdfPrints.delete(message.requestId);
+            };
+            window.addEventListener('afterprint', restorePortalTitle, { once: true });
+
+            // 제목이 브라우저에 반영될 시간을 준 뒤 인쇄 (바로 인쇄하면 이전 제목이 파일명이 되는 경우가 있음)
+            setTimeout(() => {
+                event.source.postMessage(
+                    { type: 'material-pdf-print-ready', requestId: message.requestId },
+                    event.origin && event.origin !== 'null' ? event.origin : '*'
+                );
+                console.log('[포털] 인쇄 시작, 현재 제목:', document.title);
+                window.print();
+            }, 400);
+        });
     </script>
 </body>
 </html>
