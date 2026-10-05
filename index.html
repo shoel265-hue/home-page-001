@@ -437,6 +437,10 @@
             if (currentLoginUser && currentLoginUser.type === "team") {
                 const separator = baseUrl.includes('?') ? '&' : '?';
                 finalUrl += separator + 'team=' + encodeURIComponent(currentLoginUser.teamName);
+            } else if (currentLoginUser && currentLoginUser.type === "admin") {
+                // 최고관리자: 근골격계 시스템의 '전체 (총괄 관리자)' 항목(값: 전체)으로 접속
+                const separator = baseUrl.includes('?') ? '&' : '?';
+                finalUrl += separator + 'team=' + encodeURIComponent('전체');
             }
             loadContent(finalUrl, titleText, element);
         }
@@ -480,18 +484,14 @@
             }
         });
 
-        // 💡 자재, 공기구, 연차관리대장 연동: 설정된 팀 명칭 및 최고관리자 접속 설정 전달
+        // 💡 자재, 공기구관리대장 연동: 팀 계정은 해당 팀명 전달, 최고관리자는 팀 값을 전달하지 않음
+        //    (접속팀 목록에 없는 '전체 (총괄 관리자)' 값을 넘기면 접속팀이 빈칸이 되므로 연차관리대장 전용 함수에서만 사용)
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
-            if (currentLoginUser) {
+            if (currentLoginUser && currentLoginUser.type === "team") {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                if (currentLoginUser.type === "admin") {
-                    // 최고관리자로 로그인 시 연차관리대장 등 접속팀 전체(총괄 관리자) 연동
-                    finalUrl += separator + 'team=' + encodeURIComponent('전체 (총괄 관리자)') + '&dept=' + encodeURIComponent('전체 (총괄 관리자)');
-                } else if (currentLoginUser.type === "team") {
-                    let teamName = currentLoginUser.teamName;
-                    finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
-                }
+                let teamName = currentLoginUser.teamName;
+                finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
             }
             loadContent(finalUrl, titleText, element);
         }
