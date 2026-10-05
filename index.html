@@ -222,6 +222,12 @@
                     <div class="menu-item-left"><span class="icon">🦴</span> <span>5. 근골격계부담작업 평가 </span></div>
                 </a>
 
+
+                   <!-- 🔑 연차관리대장 -->
+                   <a class="menu-item" onclick="loadLeaveContent('https://shoel265-hue.github.io/annual_system/', '6. 연차관리대장', this)">
+                    <div class="menu-item-left"><span class="icon">📅</span> <span>6. 연차관리대장</span></div>
+                </a>
+
                 <div class="menu-category" style="margin-top: 15px;">시스템 설정</div>
                 <a class="menu-item" id="setting-menu-btn" onclick="openSystemSettings(this)">
                     <div class="menu-item-left"><span class="icon">⚙️</span> <span>시스템 환경설정</span></div>
@@ -474,13 +480,36 @@
             }
         });
 
-        // 💡 자재 및 공기구관리대장 연동: 설정된 팀 명칭 그대로 전달 (건축팀, 냉동 등 각 하위 시스템 셀렉트박스 명칭과 1:1 완벽 대응)
+        // 💡 자재, 공기구, 연차관리대장 연동: 설정된 팀 명칭 및 최고관리자 접속 설정 전달
         function loadSharedContent(baseUrl, titleText, element) {
             let finalUrl = baseUrl;
-            if (currentLoginUser && currentLoginUser.type === "team") {
+            if (currentLoginUser) {
                 let separator = baseUrl.includes('?') ? '&' : '?';
-                let teamName = currentLoginUser.teamName;
-                finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
+                if (currentLoginUser.type === "admin") {
+                    // 최고관리자로 로그인 시 연차관리대장 등 접속팀 전체(총괄 관리자) 연동
+                    finalUrl += separator + 'team=' + encodeURIComponent('전체 (총괄 관리자)') + '&dept=' + encodeURIComponent('전체 (총괄 관리자)');
+                } else if (currentLoginUser.type === "team") {
+                    let teamName = currentLoginUser.teamName;
+                    finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
+                }
+            }
+            loadContent(finalUrl, titleText, element);
+        }
+
+        // 💡 연차관리대장 연동: 최고관리자는 전체(총괄 관리자), 팀 계정은 해당 팀 (포털의 '행정' 계정 = 연차관리대장의 '관리' 팀)
+        function loadLeaveContent(baseUrl, titleText, element) {
+            let finalUrl = baseUrl;
+            if (currentLoginUser) {
+                let separator = baseUrl.includes('?') ? '&' : '?';
+                let teamName;
+                if (currentLoginUser.type === "admin") {
+                    teamName = '전체 (총괄 관리자)';
+                } else if (currentLoginUser.type === "team") {
+                    teamName = (currentLoginUser.teamName === '행정') ? '관리' : currentLoginUser.teamName;
+                }
+                if (teamName) {
+                    finalUrl += separator + 'team=' + encodeURIComponent(teamName) + '&dept=' + encodeURIComponent(teamName);
+                }
             }
             loadContent(finalUrl, titleText, element);
         }
